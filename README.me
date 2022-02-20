@@ -1,0 +1,39 @@
+I want to see the code as a SINGLE project, but having separated translation unit.
+And I would like to access it on github, please do at least a dozen of commit.
+
+1)
+
+Create a std::map<Key,int>, using a custom key object a simple struct Key{int x, int y} is fine
+
+Show me how you create a custom operator <
+
+2)
+Do the same for std::unordered_map for hash and ==
+
+3)
+Use https://www.boost.org/doc/libs/1_78_0/libs/multi_index/doc/index.html 
+
+Read using any library that you want form a mariadb / mysql server a table like that
+
+CREATE TABLE `rtyAssignmentStatusHistory` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL,
+  `rangeId` int(10) unsigned NOT NULL,
+  `rty` int(11) NOT NULL,
+  `campname` varchar(4096) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `date_rangeId_rty` (`date`,`rangeId`,`rty`),
+  KEY `rangeId` (`rangeId`)
+) 
+
+(Do this part in C++)
+Create the multi index that will accomodate ALL the column from the above table
+Please force the restriction on having the unique ID (of course as a separated index)
+Data is a hashed index (using a custom hash operator, is fine to have a simple not refined one just to show you know hot to do it)
+A composite index on rangeId and rty.
+
+Load some bogus row you created with random data you want, and print on screen using fmt (of course)
+
+The order by must be the same as doing a sql like
+
+select * from tableX order by rty desc, rangeId desc
