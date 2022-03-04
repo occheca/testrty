@@ -57,7 +57,6 @@ struct rtyRangeId {};
 typedef multi_index_container<
     RtyStatus,
     indexed_by<
-        //ordered_unique<identity<RtyStatus>>,
         ordered_unique<member<RtyStatus, int, &RtyStatus::id>>,
         hashed_unique<identity<RtyStatus>, DataRtyHash>,
         ordered_non_unique<
@@ -123,8 +122,6 @@ RtyStatus_set getRtyStatus(sql::Connection* conn) {
 
     while (res->next()) {
 
-        //auto currentRecord = new RtyStatus((int) res->getInt(1), (std::string) res->getString(2), (int) res->getInt(3), (int) res->getInt(4), (std::string) res->getString(5)); 
-       
         currentRecord.id = res->getInt(1);
         currentRecord.date = res->getString(2);
         currentRecord.rangeId = res->getInt(3);
