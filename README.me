@@ -1,3 +1,24 @@
+
+# TEST CPP
+Project of Visual Studio 2022
+
+## Code Dependences
+
+[MariaDb](https://mariadb.com/docs/clients/mariadb-connectors/connector-cpp/)
+[Boost.MultiIndex] (https://www.boost.org/doc/libs/1_65_0/libs/multi_index/doc/tutorial/basics.html)
+[fmt] (https://fmt.dev/latest/api.html) 
+
+```bash
+prueba
+```
+
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
+
+
+Code Dependences
+
+
 I want to see the code as a SINGLE project, but having separated translation unit.
 And I would like to access it on github, please do at least a dozen of commit.
 
@@ -16,14 +37,14 @@ Use https://www.boost.org/doc/libs/1_78_0/libs/multi_index/doc/index.html
 Read using any library that you want form a mariadb / mysql server a table like that
 
 CREATE TABLE `rtyAssignmentStatusHistory` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `date` date NOT NULL,
-  `rangeId` int(10) unsigned NOT NULL,
-  `rty` int(11) NOT NULL,
-  `campname` varchar(4096) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `date_rangeId_rty` (`date`,`rangeId`,`rty`),
-  KEY `rangeId` (`rangeId`)
+Â  `id` int(11) NOT NULL AUTO_INCREMENT,
+Â  `date` date NOT NULL,
+Â  `rangeId` int(10) unsigned NOT NULL,
+Â  `rty` int(11) NOT NULL,
+Â  `campname` varchar(4096) DEFAULT NULL,
+Â  PRIMARY KEY (`id`),
+Â  UNIQUE KEY `date_rangeId_rty` (`date`,`rangeId`,`rty`),
+Â  KEY `rangeId` (`rangeId`)
 ) 
 
 (Do this part in C++)
