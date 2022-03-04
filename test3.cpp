@@ -193,7 +193,7 @@ void testFind(RtyStatus_set& rs) {
 
         rtyById itById = idIndex.find(id);
 
-        if (itById == idIndex.end()) {
+        if (itById != idIndex.end()) {
             printRty(*itById);
         }
 
