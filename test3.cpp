@@ -1,7 +1,5 @@
 
 #define FMT_HEADER_ONLY
-//#define BOOST_NO_MEMBER_TEMPLATES
-
 
 #include <iostream>
 #include <fmt/core.h>
@@ -37,6 +35,7 @@ struct RtyStatus {
             this->rty == p.rty &&
             this->campname == p.campname;
     }
+
 };
 
 /*Custom Hash for Data of RtyStatus*/
@@ -65,11 +64,11 @@ typedef multi_index_container<
             tag<rtyRangeId>,
             composite_key<
                     RtyStatus,
-                    member<RtyStatus, int, &RtyStatus::rty>,
-                    member<RtyStatus, int, &RtyStatus::rangeId>
+                    member<RtyStatus, int, &RtyStatus::rangeId>, 
+                    member<RtyStatus, int, &RtyStatus::rty>
             >,
             composite_key_compare<
-                std::greater<int>,
+                std::less<int>,
                 std::greater<int> 
             >
         >
@@ -83,8 +82,14 @@ std::unique_ptr<sql::Connection> getConnDB();
 /*load table RtyStatus in multiIndex container*/ 
 RtyStatus_set getRtyStatus(sql::Connection *conn);
 
-/*print in console */
+/*print in console Select * from */
+void printSelectRtyRangeId(RtyStatus_set& rs); 
+
+/*print in console one record*/
 void printRty(const RtyStatus rty); 
+
+/*test find by id*/
+void testFind(RtyStatus_set& rs);
 
 
 std::unique_ptr<sql::Connection> getConnDB() {
@@ -136,40 +141,63 @@ RtyStatus_set getRtyStatus(sql::Connection* conn) {
 
 
 void printRty(const RtyStatus rty) {
-    fmt::text_style color; 
+    fmt::text_style color;
+    std::string strRty = "";
     
-    if (rty.id % 2 == 0) {
-        color = fg(fmt::color::dark_red); 
-    }
-    else {
-        color = fg(fmt::color::dark_green);
-    }   
+    strRty = strRty + fmt::format(fg(fmt::color::blue), " {} ", rty.rty);
+    strRty = strRty + fmt::format(fg(fmt::color::blue), " {} ", rty.rangeId);
+    strRty = strRty + fmt::format(fg(fmt::color::antique_white), " {} ", rty.id);
+    strRty = strRty + fmt::format(fg(fmt::color::dark_red), " {} ", rty.date);
+    strRty = strRty + fmt::format(fg(fmt::color::green), " {} ", rty.campname);
 
-    fmt::print(color, "Id: {}, date:{}, rangeId: {}, rty:{}, campname:{}\n", rty.id, rty.date, rty.rangeId, rty.rty, rty.campname); 
+    fmt::print("\n{}", strRty);
 };
 
+void printSelectRtyRangeId(RtyStatus_set& rs) {
 
+    const RtyStatus_set::nth_index<2>::type& compIndex = rs.get<2>();
+
+    for (auto iter = compIndex.begin(); iter != compIndex.end(); ++iter) {
+        printRty(*iter);
+    }; 
+
+    fmt::print(fmt::emphasis::bold | fg(fmt::color::red), "\n\n TOTAL ROWS: {}", compIndex.size());
+}
 
 void exercise3() {
 
     std::unique_ptr<sql::Connection> conn;
     RtyStatus_set rs;
-    int count = 0;
  
     conn = getConnDB();
     if (conn) {
         rs = getRtyStatus(conn.get());
-    }
- 
-    const RtyStatus_set::nth_index<0>::type& id_index = rs.get<0>();
-    const RtyStatus_set::nth_index<2>::type& compIndex = rs.get<2>();
-
-    auto p = id_index.find(568);
-
-    for (auto iter = compIndex.begin(); iter != compIndex.end(); ++iter, ++count) {
-        printRty(*iter);
+        conn->close(); 
     }
 
-    fmt::print(fmt::emphasis::bold | fg(fmt::color::red), "\n\n TOTAL ROWS: {}", count);
+    printSelectRtyRangeId(rs);
+
+    testFind(rs);
 }; 
 
+
+void testFind(RtyStatus_set& rs) {
+    typedef const RtyStatus_set::nth_index<0>::type::iterator rtyById;
+    const RtyStatus_set::nth_index<0>::type& idIndex = rs.get<0>();
+
+    int id = 0;
+
+    do {
+        fmt::print("\n\nEnter Id (0 for exit): \n");
+        std::cin >> id;
+
+        rtyById itById = idIndex.find(id);
+
+        if (itById == idIndex.end()) {
+            printRty(*itById);
+        }
+
+    } while (id);
+
+    
+}; 
